@@ -1,0 +1,14 @@
+{
+  "name": "erjotek/aoc-2024-php",
+  "description": "Solutions for Advent of Code 2024 using PHP 8.x",
+  "minimum-stability": "stable",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "Rafał Janiczek"
+    }
+  ],
+  "require": {
+    "php": "^8.3"
+  }
+}
