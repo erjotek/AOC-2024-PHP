@@ -7,14 +7,15 @@ function _display(int $part): void
     global $argv;
     $day = basename($argv[0], '.php');
 
-    $startMem = memory_get_peak_usage();
+    memory_reset_peak_usage();
+
     $startTs = hrtime(true);
     $func = 'part' . $part;
 
     echo "== Day $day part $part ==" . PHP_EOL;
     echo 'Result: ' . $func(input(rtrim(file_get_contents(__DIR__ . "/inputs/$day.txt")))) . PHP_EOL;
     echo 'Time  : ' . sprintf('%.6f', (hrtime(true) - $startTs) / 1e+9) . ' s' . PHP_EOL;
-    echo 'Memory: ' . sprintf('%.5f', ((memory_get_peak_usage() - $startMem) / 1024 / 1024)) . ' MB' . PHP_EOL;
+    echo 'Memory: ' . sprintf('%.5f', (memory_get_peak_usage() / 1024 ** 2)) . ' MB' . PHP_EOL;
     echo PHP_EOL;
 }
 
