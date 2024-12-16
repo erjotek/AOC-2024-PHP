@@ -14,13 +14,11 @@ function part1($input)
     return check($input); //5461
 }
 
-
 function part2($input)
 {
     global $visitied;
 
     $count = 0;
-
 
     foreach ($visitied as $row => $cols) {
         foreach ($cols as $col => $true) {

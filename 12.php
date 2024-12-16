@@ -2,7 +2,6 @@
 
 function input($input)
 {
-
     $lines = explode("\n", $input);
     $lines = array_map(fn($l) => str_split($l), $lines);
 

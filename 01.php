@@ -2,14 +2,12 @@
 
 function input($input)
 {
-
     $input = explode("\n", $input);
     $input = array_map(fn($l) => explode('   ', $l), $input);
     $first = array_column($input, '0');
     sort($first);
     $second = array_column($input, '1');
     sort($second);
-
 
     return compact('first', 'second');
 }

@@ -2,26 +2,6 @@
 
 function input($input)
 {
-    $inp3ut = <<<TEST
-p=0,4 v=3,-3
-p=6,3 v=-1,-3
-p=10,3 v=-1,2
-p=2,0 v=2,-1
-p=0,0 v=1,3
-p=3,0 v=-2,-2
-p=7,6 v=-1,-3
-p=3,0 v=-1,-2
-p=9,3 v=2,3
-p=7,3 v=-1,2
-p=2,4 v=2,-3
-p=9,5 v=-3,-3
-TEST;
-
-    $in2put = <<<TEST
-p=2,4 v=2,-3
-TEST;
-
-
     $lines = explode("\n", $input);
 
     $robots = [];
@@ -35,12 +15,6 @@ TEST;
 
 function part1($robots)
 {
-    //101 tiles wide and 103 tiles tall
-
-    //11 tiles wide and 7 tiles tall
-
-
-
     $steps = 100;
     $cols = 101; $rows = 103;
 
@@ -52,7 +26,7 @@ function part1($robots)
         $tiles[$rpy][$rpx][$rid] = $rid;
     }
 
-//    $steps = 10000;
+//    $steps = 10000; // for part2
     for ($s = 0; $s < $steps; $s++) {
 //        foreach ($tiles as $line) {
 //            if (count($line) >= 30) {
