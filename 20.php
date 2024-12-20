@@ -1,25 +1,8 @@
 <?php
 
+$visited = [];
 function input($input)
 {
-    $inp3ut = <<<TEST
-###############
-#...#...#.....#
-#.#.#.#.#.###.#
-#S#...#.#.#...#
-#######.#.#.###
-#######.#.#...#
-#######.#.###.#
-###..E#...#...#
-###.#######.###
-#...###...#...#
-#.#####.#.###.#
-#.#...#.#.#...#
-#.#.#.#.#.#.###
-#...#...#...###
-###############
-TEST;
-
     $lines = explode("\n", $input);
     $lines = array_map(fn($l) => str_split($l), $lines);
 
@@ -28,95 +11,90 @@ TEST;
 
 function part1($input)
 {
-    $cheater = [];
-
     foreach ($input as $row => $line) {
         foreach ($line as $col => $char) {
-            if ($char == 'S') {
+            if ($char === 'S') {
                 $start = [$row, $col];
                 $input[$row][$col] = '.';
             }
-            if ($char == 'E') {
+            if ($char === 'E') {
                 $end = [$row, $col];
                 $input[$row][$col] = '.';
             }
-
-            if ($char == '#' && $row > 0 && $row < count($input)-1 && $col > 0 && $col < count($input[0])-1) {
-                $cheater[] = [$row, $col];
-            }
-
         }
     }
-
-//    print_r($cheater);
-
-
 
     $dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
-    $total = [];
+    global $visited;
+    $q = new SplQueue();
+    $q->enqueue([$start, 0, false]);
 
-    $oldInput = $input;
-    foreach ($cheater as $xid => $xxx) {
-        $input = $oldInput;
-        $input[$xxx[0]][$xxx[1]] = '.';
-        $q = new SplQueue();
-
-        $q->enqueue([$start, 0, false]);
-        $visited = [];
-        while (!$q->isEmpty()) {
-            [$pos, $steps, $cheat] = $q->dequeue();
-
-            if ($pos[0] == $end[0] && $pos[1] == $end[1]) {
-//                echo "KONIEC! w $steps\n";
-                break;
-            }
-
-            if (isset($visited[$pos[0]][$pos[1]]) && $visited[$pos[0]][$pos[1]] < $steps) {
-                continue;
-            }
-
-            if ($input[$pos[0]][$pos[1]] == 'E') {
-                break;
-            }
-
-            $visited[$pos[0]][$pos[1]] = $steps;
+    while (!$q->isEmpty()) {
+        [$pos, $steps, $cheat] = $q->dequeue();
 
 
-            foreach ($dirs as $dir) {
-                $newpos = [$pos[0] + $dir[0], $pos[1] + $dir[1]];
-
-                if (isset($input[$newpos[0]][$newpos[1]]) && $input[$newpos[0]][$newpos[1]] == '.') {
-                    $q->enqueue([$newpos, $steps + 1, $cheat]);
-                }
-            }
+        if (isset($visited[$pos[0]][$pos[1]]) && $visited[$pos[0]][$pos[1]] < $steps) {
+            continue;
         }
 
-        $total[$steps] ??= 0;
-        $total[$steps]++;
-//        echo "$xid  z ".count($cheater)."\n";
-    }
+        $visited[$pos[0]][$pos[1]] = $steps;
 
+        if ($pos[0] == $end[0] && $pos[1] == $end[1]) {
+            break;
+        }
 
-    krsort($total);
-    print_r($total);
-    $max = max(array_keys($total));
+        foreach ($dirs as $dir) {
+            $newpos = [$pos[0] + $dir[0], $pos[1] + $dir[1]];
 
-    $sum = 0;
-    foreach (array_keys($total) as $key) {
-        if ($key < $max) {
-            echo $total[$key]." cheats which saves ".($max-$key)."\n";
-            if ($max -$key >= 100) {
-                $sum += $total[$key];
+            if (isset($input[$newpos[0]][$newpos[1]]) && $input[$newpos[0]][$newpos[1]] === '.') {
+                $q->enqueue([$newpos, $steps + 1, $cheat]);
             }
         }
     }
-    return $sum;
+
+    return countCheats(2);
 }
 
 function part2($input)
 {
+    return countCheats(20);
 }
 
+function countCheats(int $limit)
+{
+    global $visited;
+    $cheats = [];
+
+    foreach ($visited as $row => $data) {
+        foreach ($data as $col => $steps) {
+            for ($drow = $limit; $drow >= -$limit; $drow--) {
+                for ($dcol = $limit; $dcol >= -$limit; $dcol--) {
+                    $m = abs($dcol) + abs($drow);
+                    if ($m > $limit) {
+                        continue;
+                    }
+
+                    $neigh = [$row + $drow, $col + $dcol];
+
+                    if (isset($visited[$neigh[0]][$neigh[1]]) && $visited[$neigh[0]][$neigh[1]] > $steps) {
+                        $delta = $visited[$neigh[0]][$neigh[1]] - $steps - $m;
+                        $cheats[$delta] ??= 0;
+                        $cheats[$delta]++;
+                    }
+                }
+            }
+        }
+    }
+
+    $sum = 0;
+    foreach ($cheats as $delta => $count) {
+        if ($delta >= 100) {
+            $sum += $count;
+        }
+    }
+
+    return $sum;
+}
 
 include __DIR__ . '/template.php';
