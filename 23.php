@@ -19,20 +19,22 @@ function part1($conns)
 
     $keys = array_keys($conns);
     foreach ($keys as $one) {
-        foreach ($keys as $two) {
-            if ($two == $one) {
-                continue;
-            }
-            foreach ($keys as $three) {
-                if ($two == $three || $one == $three) {
+        if (str_starts_with($one, 't')) {
+            foreach ($keys as $two) {
+                if ($two == $one) {
                     continue;
                 }
-                if (isset($conns[$one][$two]) && isset($conns[$one][$three]) && isset($conns[$two][$three])) {
-                    $key = [$one, $two, $three];
-                    sort($key);
-                    $key = implode(',', $key);
-                    if (str_starts_with($key, 't') || str_contains($key, ',t')) {
+                foreach ($keys as $three) {
+                    if ($two == $three || $one == $three) {
+                        continue;
+                    }
+                    if (isset($conns[$one][$two]) && isset($conns[$one][$three]) && isset($conns[$two][$three])) {
+                        $key = [$one, $two, $three];
+                        sort($key);
+                        $key = implode(',', $key);
+//                    if (str_starts_with($key, 't') || str_contains($key, ',t')) {
                         $seqs[$key] = $key;
+//                    }
                     }
                 }
             }
